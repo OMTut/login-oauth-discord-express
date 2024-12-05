@@ -7,7 +7,7 @@ const {
     DISCORD_USER_URL,
     } = process.env;
 
-router.get('/user', async (req, res) => {
+router.get('/', async (req, res) => {
     const { access_token } = req.query;
     if (!access_token) {
         return res.status(400).send('Missing token from Discord');

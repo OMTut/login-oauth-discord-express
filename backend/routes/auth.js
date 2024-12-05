@@ -6,10 +6,10 @@ require('dotenv').config();
 const router = express.Router();
 
 // Endpoint to exchange Authorization code for Access token
-router.use('/auth', getAccessTokenRoute);
+router.use('/token', getAccessTokenRoute);
 
 // Endpoint to fetch user data
-router.use('/auth', getUserRoute);
+router.use('/user', getUserRoute);
 
 // Route to handle the callback from Discord
 // router.get('/callback', async (req, res) => {

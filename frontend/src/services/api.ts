@@ -10,7 +10,7 @@ export const apiService = {
             throw new Error("No access token found")
         }
 
-        const response = await fetch(`${API_BASE_URL}/user?access_token=${accessToken}`, {
+        const response = await fetch(`${API_BASE_URL}/auth/user?access_token=${accessToken}`, {
             headers: { Authorization: `Bearer ${accessToken}`},
         })
         if (!response.ok) {

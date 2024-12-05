@@ -1,21 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
-import axios from 'axios';
+import React from 'react'
+import { Navigate, useLocation } from 'react-router-dom'
 
-const ProtectedRoute: React.FC<{children: JSX.Element }> = ({ children }) => {
-   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+interface ProtectedRouteProps {
+   children: JSX.Element
+}
 
-   useEffect(() => {
-      axios.get('http://localhost:5000/auth/check')
-         .then(() => setIsAuthenticated(true))
-         .catch(() => setIsAuthenticated(false))
-   }, []);
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+   const location = useLocation();
+   const isAuthenticated = !!localStorage.getItem('access_token')
+   const hasAuthCode = new URLSearchParams(location.search).has('code')
+   console.log("Is Authenticated:", isAuthenticated)
+   console.log("Is Authenticated:", isAuthenticated); // Debugging
+   console.log("Access Token in localStorage:", localStorage.getItem('access_token')); // Debugging
+   console.log("Has Auth Code:", hasAuthCode); // Debugging
 
-   if (isAuthenticated === null) {
-      return <div>Loading...</div>
+   if (isAuthenticated) {
+      return children
+   } else if (hasAuthCode) {
+      return children
+   } else {
+      return <Navigate to='/login' />
    }
 
-   return isAuthenticated ? children : <Navigate to="/login" />
 }
 
 export default ProtectedRoute

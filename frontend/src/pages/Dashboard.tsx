@@ -9,6 +9,7 @@ const Dashboard: React.FC = () => {
    useEffect(() => {
       const handleAuth = async () => {
          try {
+            console.log("Dashbaord component mounted")
             await oauthService.handleCallBack();
             const user = await apiService.getUserData();
             setUserData(user)

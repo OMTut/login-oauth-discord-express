@@ -20,9 +20,9 @@ export const oauthService = {
 
         const codeChallenge = await generateCodeChallenge(codeVerifier)
 
-        const authUrl = `${AUTH_URL}` +
+        const authUrl = `${AUTH_URL}?` +
                         `response_type=code&` +
-                        `client_id=${CLIENT_ID}` +
+                        `client_id=${CLIENT_ID}&` +
                         `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
                         `scope=identify&` +
                         `code_challenge=${codeChallenge}&` +
@@ -36,8 +36,8 @@ export const oauthService = {
     //    compares it to the code_verifier in localStorage
     // Sends the code to the backend to exchange it for a token
     //*****************************************************************/
-    async handleCallBack(): Promise<string | null> {
-
+    async handleCallBack(): Promise<void> {
+        console.log("HandleCallback Called.")
         //Extracts code from query params when user is redirect back
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code')
@@ -45,6 +45,9 @@ export const oauthService = {
         if (!code || !codeVerifier) {
             throw new Error("Authorization code or PKCE Verefier missing")
         }
+
+        console.log("Authorization code:", code)
+        console.log("PCKE V:", codeVerifier)
 
         //send exchange req to the backend
         const response = await fetch(TOKEN_URL, {
@@ -57,10 +60,15 @@ export const oauthService = {
             throw new Error("Failed to exchange code for token")
         }
 
-        const { access_token } = await response.json()
-        localStorage.setItem("access_token", access_token)
-
-        return access_token;
+        const data = await response.json()
+        console.log("Token exchange response:", data);
+        if (data.access_token) {
+            console.log("Access Token:", data.access_token);
+            localStorage.setItem("access_token", data.access_token);
+            console.log("Token in storage:", localStorage.getItem('access_token'));
+        } else {
+            console.error("Access token not found in response:", data);
+        }
     }, 
 
     // Get the access token from local
