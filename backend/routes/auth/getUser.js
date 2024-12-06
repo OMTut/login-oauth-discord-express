@@ -17,6 +17,7 @@ router.get('/', async (req, res) => {
         const response = await axios.get(DISCORD_USER_URL, {
             headers: { Authorization: `Bearer ${access_token}`},
         })
+        res.setHeader('Content-Type', 'application/json');
         res.json(response.data);
 
     } catch (error) {

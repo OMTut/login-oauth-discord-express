@@ -42,9 +42,19 @@ export const oauthService = {
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code')
         const codeVerifier = localStorage.getItem('pkce_code_verifier')
+        const timestamp = Date.now()
         if (!code || !codeVerifier) {
             throw new Error("Authorization code or PKCE Verefier missing")
         }
+
+        // Check if access token already exists
+        const existingAccessToken = localStorage.getItem('access_token')
+        if (existingAccessToken) {
+            console.log("Access token already exists:", existingAccessToken)
+            return
+        }
+
+        localStorage.setItem('auth_code_timestamp', timestamp.toString())
 
         console.log("Authorization code:", code)
         console.log("PCKE V:", codeVerifier)
@@ -53,19 +63,25 @@ export const oauthService = {
         const response = await fetch(TOKEN_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code, codeVerifier }),
+            body: JSON.stringify({ 
+                code, 
+                codeVerifier,
+                REDIRECT_URI,
+                CLIENT_ID,
+                grant_type: 'authorization_code',
+                timestamp: localStorage.getItem('auth_code_timestamp')
+             }),
         })
-
         if (!response.ok) {
             throw new Error("Failed to exchange code for token")
         }
 
         const data = await response.json()
         console.log("Token exchange response:", data);
+        
         if (data.access_token) {
             console.log("Access Token:", data.access_token);
             localStorage.setItem("access_token", data.access_token);
-            console.log("Token in storage:", localStorage.getItem('access_token'));
         } else {
             console.error("Access token not found in response:", data);
         }

@@ -1,9 +1,8 @@
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URl;
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export const apiService = {
 
     async getUserData(): Promise<any> {
-        
         // get access_token from local
         const accessToken = localStorage.getItem('access_token')
         if (!accessToken) {
