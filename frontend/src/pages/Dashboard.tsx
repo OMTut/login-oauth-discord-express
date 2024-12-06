@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import {oauthService} from "../services/oauthService";
 import {apiService} from "../services/api";
+import LogoutComponent from '../components/LogoutComponent';
 
 const Dashboard: React.FC = () => {
    const [userData, setUserData] = useState<any>(null);
@@ -33,6 +33,7 @@ const Dashboard: React.FC = () => {
             src={`https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png`}
             alt="User Avatar"
             />
+         <LogoutComponent />
       </div>
    )
 }
