@@ -7,17 +7,16 @@ const Dashboard: React.FC = () => {
    const [error, setError] = useState<string | null>(null);
 
    useEffect(() => {
-      const handleAuth = async () => {
+      const fetchUserData = async () => {
          try {
-            console.log("Dashbaord component mounted")
-            await oauthService.handleCallBack();
-            const user = await apiService.getUserData();
+            console.log("Dashboard component mounted")
+            const user = await apiService.getUserData()
             setUserData(user)
          } catch (err: any) {
             setError(err.message)
          }
       }
-      handleAuth();
+      fetchUserData()
    }, [])
 
    if (error) {
